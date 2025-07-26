@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Church Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --primary: #3498db;
+  --secondary: #ec83f0d3;
+  --success: #22db3b;
+  --text: #2c3e50;
+  --text-light: #7f8c8d;
+  --bg: #f8f9fa;
+  --card-bg: #ffffff;
+  --border: #e0e0e0;
+}
+
+[data-theme="dark"] {
+  --primary: #74b9ff;
+  --secondary: #f39c12;
+  --success: #00b894;
+  --text: #ecf0f1;
+  --text-light: #bdc3c7;
+  --bg: #2d3436;
+  --card-bg: #34495e;
+  --border: #576574;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.4;
+  min-height: 100vh;
+  padding: 5px;
+}
+
+.dashboard {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary), #2980b9);
+  color: white;
+  padding: 10px;
+  border-radius: 6px 6px 0 0;
+}
+
+.header h1 {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background: var(--primary);
+  color: white;
+  padding: 6px 10px;
+  gap: 8px;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.search-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.search-bar input {
+  padding: 3px 6px;
+  border-radius: 3px;
+  border: none;
+  font-size: 12px;
+  min-width: 120px;
+}
+
+.toggle-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.marquee {
+  background: var(--secondary);
+  color: white;
+  padding: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.sidebar {
+  background: var(--card-bg);
+  border-radius: 5px;
+  padding: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.sidebar h3 {
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: var(--primary);
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin-bottom: 5px;
+}
+
+.sidebar a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12px;
+  display: block;
+  padding: 3px 0;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: var(--primary);
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 4px 0;
+}
+
+.chart-container {
+  height: 120px;
+  margin-top: 8px;
+}
+
+.progress-container {
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  margin: 6px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--success));
+  border-radius: 3px;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 15px;
+  margin-top: 8px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--primary);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -15px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.timeline-date {
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+.footer {
+  text-align: center;
+  padding: 8px;
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 10px;
+}
+
+/* Mobile-first responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    display: none; /* Consider a mobile menu instead */
+  }
+  
+  .main-content {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .card[style*="grid-column: span 2"] {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .card[style*="grid-column: span 2"] {
+    grid-column: span 1;
+  }
+  
+  .navbar {
+    flex-direction: column;
+  }
+  
+  .nav-links {
+    justify-content: center;
+  }
+  
+  .search-bar {
+    justify-content: center;
+  }
+  
+  .stat-value {
+    font-size: 16px;
+  }
+  
+  .chart-container {
+    height: 100px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="dashboard">
+  <header class="header">
+    <h1>Church Management</h1>
+  </header>
+  
+  <nav class="navbar">
+    <div class="nav-links">
+      <a href="#">Dashboard</a>
+      <a href="#">Visitors</a>
+      <a href="#">Offering</a>
+      <a href="#">Finance</a>
+      <a href="#">Equipment</a>
+      <a href="#">Admin</a>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search...">
+      <button class="toggle-btn" onclick="toggleDarkMode()">🌓</button>
+    </div>
+  </nav>
+  
+  <div class="marquee">
+    <marquee>📢 Announcement: Please update your profile information.</marquee>
+  </div>
+  
+  <div class="dashboard-grid">
+    <aside class="sidebar">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="/allMembers">Membership</a></li>
+        <li><a href="/attendance">Attendance</a></li>
+        <li><a href="/allMembers">All Members</a></li>
+        <li><a href="/viewAttendance">Records</a></li>
+        <li><a href="/addMembers">Add Member</a></li>
+        <li><a href="/birthdayPage">Birthdays</a></li>
+        <li><a href="/financial">Finance</a></li>
+      </ul>
+    </aside>
+    
+    <main class="main-content">
+      <!-- Total Membership -->
+      <div class="card">
+        <h3>Total Members</h3>
+        <div class="stat-value" id="totalUsers">0</div>
+        <div class="progress-container">
+          <div class="progress-bar" id="membershipProgress" style="width: 0%"></div>
+        </div>
+        <div style="font-size: 11px;">Growth: <span id="membershipGrowth">0</span>%</div>
+      </div>
+      
+      <!-- Birthdays This Month -->
+      <div class="card">
+        <h3>Birthdays</h3>
+        <div class="stat-value" id="birthdayCount">0</div>
+        <div class="chart-container">
+          <canvas id="birthdayChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Gender Distribution -->
+      <div class="card">
+        <h3>Gender</h3>
+        <div id="genderCount" style="font-size: 12px;"></div>
+        <div class="chart-container">
+          <canvas id="genderChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Member Status -->
+      <div class="card">
+        <h3>Status</h3>
+        <div id="statusCount" style="font-size: 12px;"></div>
+        <div class="chart-container">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Age Groups -->
+      <div class="card" style="grid-column: span 2;">
+        <h3>Age Groups</h3>
+        <div id="ageGroups" style="font-size: 12px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;"></div>
+        <div class="chart-container">
+          <canvas id="ageChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Attendance Overview -->
+      <div class="card" style="grid-column: span 2;">
+        <h3>Attendance</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div>
+            <div style="font-size: 12px;">Members: <span id="memberAttendance">0</span></div>
+            <div class="progress-container">
+              <div class="progress-bar" id="memberProgress" style="width: 0%"></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size: 12px;">Visitors: <span id="visitorAttendance">0</span></div>
+            <div class="progress-container">
+              <div class="progress-bar" id="visitorProgress" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="attendanceChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Recent Activity -->
+      <div class="card" style="grid-column: span 2;">
+        <h3>Recent Activity</h3>
+        <div class="timeline" id="activityTimeline"></div>
+      </div>
+    </main>
+  </div>
+  
+  <footer class="footer">
+    &copy; <span id="year"></span> Church Management System
+  </footer>
+</div>
+
+<script>
+// Initialize date
+document.getElementById("year").innerText = new Date().getFullYear();
+
+// Dark mode toggle
+function toggleDarkMode() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+}
+
+// Process member data (from /saveToDB endpoint)
+function processMemberData(members) {
+  const currentMonth = new Date().getMonth() + 1;
+  const stats = {
+    totalUsers: members.length,
+    genderCounts: { 'Male': 0, 'Female': 0 },
+    statusCounts: { 'Single': 0, 'Married': 0 },
+    ageRanges: { '1-17': 0, '18-35': 0, '36-49': 0, '50-100': 0 },
+    totalBirthdays: 0,
+    birthdayMonths: Array(12).fill(0)
+  };
+  
+  members.forEach(member => {
+    if (member.gender) stats.genderCounts[member.gender] = (stats.genderCounts[member.gender] || 0) + 1;
+    if (member.status) stats.statusCounts[member.status] = (stats.statusCounts[member.status] || 0) + 1;
+    
+    if (member.age) {
+      const age = parseInt(member.age);
+      if (age >= 1 && age <= 17) stats.ageRanges['1-17']++;
+      else if (age >= 18 && age <= 35) stats.ageRanges['18-35']++;
+      else if (age >= 36 && age <= 49) stats.ageRanges['36-49']++;
+      else if (age >= 50 && age <= 100) stats.ageRanges['50-100']++;
+    }
+    
+    if (member.dob) {
+      const dob = new Date(member.dob);
+      const birthMonth = dob.getMonth() + 1;
+      stats.birthdayMonths[birthMonth - 1]++;
+      if (birthMonth === currentMonth) stats.totalBirthdays++;
+    }
+  });
+  
+  return stats;
+}
+
+// Process attendance data (from /attendance endpoint)
+function processAttendanceData(attendance) {
+  const stats = {
+    members: 0,
+    visitors: 0,
+    weeklyTrend: [0, 0, 0, 0],
+    genderCount: { 'male': 0, 'female': 0 },
+    ageGroups: { 'children': 0, 'youth': 0, 'adult': 0 }
+  };
+  
+  // Get dates for last 4 weeks
+  const today = new Date();
+  const weekDates = Array.from({ length: 4 }, (_, i) => {
+    const date = new Date(today);
+    date.setDate(date.getDate() - (7 * (3 - i)));
+    return date.toISOString().split('T')[0];
+  });
+  
+  attendance.forEach(record => {
+    // Count members vs visitors
+    if (record.type === 'member') stats.members++;
+    else if (record.type === 'visitor') stats.visitors++;
+    
+    // Count by gender
+    if (record.gender) {
+      stats.genderCount[record.gender.toLowerCase()]++;
+    }
+    
+    // Count by age group
+    if (record.ageGroup) {
+      const ageGroup = record.ageGroup.toLowerCase();
+      if (ageGroup.includes('child')) stats.ageGroups.children++;
+      else if (ageGroup.includes('youth')) stats.ageGroups.youth++;
+      else if (ageGroup.includes('adult')) stats.ageGroups.adult++;
+    }
+    
+    // Weekly trend
+    const recordDate = record.date;
+    const weekIndex = weekDates.findIndex(d => d === recordDate);
+    if (weekIndex !== -1) {
+      stats.weeklyTrend[weekIndex]++;
+    }
+  });
+  
+  return stats;
+}
+
+// Initialize charts
+function initCharts(memberStats, attendanceStats) {
+  // Gender Chart
+  new Chart(document.getElementById('genderChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(memberStats.genderCounts),
+      datasets: [{
+        data: Object.values(memberStats.genderCounts),
+        backgroundColor: ['#3498db', '#e67e22'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
+    }
+  });
+  
+  // Status Chart
+  new Chart(document.getElementById('statusChart').getContext('2d'), {
+    type: 'pie',
+    data: {
+      labels: Object.keys(memberStats.statusCounts),
+      datasets: [{
+        data: Object.values(memberStats.statusCounts),
+        backgroundColor: ['#2ecc71', '#9b59b6'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
+    }
+  });
+  
+  // Age Chart
+  new Chart(document.getElementById('ageChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(memberStats.ageRanges),
+      datasets: [{
+        data: Object.values(memberStats.ageRanges),
+        backgroundColor: ['#f1c40f', '#e74c3c', '#1abc9c', '#34495e'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { 
+        y: { beginAtZero: true, ticks: { font: { size: 10 } } },
+        x: { ticks: { font: { size: 10 } } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+  
+  // Birthday Chart
+  new Chart(document.getElementById('birthdayChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      datasets: [{
+        data: memberStats.birthdayMonths,
+        borderColor: '#e74c3c',
+        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+        fill: true,
+        tension: 0.3,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { 
+        y: { beginAtZero: true, ticks: { font: { size: 10 } } },
+        x: { ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+  
+  // Attendance Chart
+  new Chart(document.getElementById('attendanceChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+      datasets: [
+        {
+          label: 'Members',
+          data: attendanceStats.weeklyTrend,
+          borderColor: '#3498db',
+          backgroundColor: 'rgba(52, 152, 219, 0.1)',
+          fill: true,
+          tension: 0.3,
+          borderWidth: 1
+        },
+        {
+          label: 'Visitors',
+          data: attendanceStats.weeklyTrend.map(v => Math.round(v * 0.3)),
+          borderColor: '#e67e22',
+          backgroundColor: 'rgba(230, 126, 34, 0.1)',
+          fill: true,
+          tension: 0.3,
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { 
+        legend: { 
+          position: 'bottom',
+          labels: { boxWidth: 10, font: { size: 10 } }
+        } 
+      },
+      scales: { 
+        y: { beginAtZero: true, ticks: { font: { size: 10 } } },
+        x: { ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+// Populate dashboard
+function populateDashboard(memberStats, attendanceStats) {
+  document.getElementById("totalUsers").textContent = memberStats.totalUsers;
+  document.getElementById("birthdayCount").textContent = memberStats.totalBirthdays;
+  
+  document.getElementById("genderCount").innerHTML = `
+    <div>Male: ${memberStats.genderCounts['Male'] || 0}</div>
+    <div>Female: ${memberStats.genderCounts['Female'] || 0}</div>
+  `;
+  
+  document.getElementById("statusCount").innerHTML = `
+    <div>Single: ${memberStats.statusCounts['Single'] || 0}</div>
+    <div>Married: ${memberStats.statusCounts['Married'] || 0}</div>
+  `;
+  
+  document.getElementById("ageGroups").innerHTML = `
+    <div>👶 1-17: ${memberStats.ageRanges['1-17']}</div>
+    <div>🧑 18-35: ${memberStats.ageRanges['18-35']}</div>
+    <div>👨 36-49: ${memberStats.ageRanges['36-49']}</div>
+    <div>👴 50+: ${memberStats.ageRanges['50-100']}</div>
+  `;
+  
+  document.getElementById("memberAttendance").textContent = attendanceStats.members;
+  document.getElementById("visitorAttendance").textContent = attendanceStats.visitors;
+  
+  const totalAttendance = attendanceStats.members + attendanceStats.visitors;
+  const memberPercentage = totalAttendance > 0 ? Math.round((attendanceStats.members / totalAttendance) * 100) : 0;
+  const visitorPercentage = totalAttendance > 0 ? Math.round((attendanceStats.visitors / totalAttendance) * 100) : 0;
+  
+  document.getElementById("memberProgress").style.width = `${memberPercentage}%`;
+  document.getElementById("visitorProgress").style.width = `${visitorPercentage}%`;
+  
+  const growthPercentage = Math.min(100, Math.round(memberStats.totalUsers / 150 * 100));
+  document.getElementById("membershipProgress").style.width = `${growthPercentage}%`;
+  document.getElementById("membershipGrowth").textContent = growthPercentage;
+  
+  const timeline = document.getElementById("activityTimeline");
+  const today = new Date();
+  
+  const timelineItems = [
+    {
+      date: today.toISOString().split('T')[0],
+      event: 'Sunday Service',
+      attendees: attendanceStats.members + attendanceStats.visitors
+    },
+    {
+      date: new Date(today.setDate(today.getDate() - 2)).toISOString().split('T')[0],
+      event: 'Bible Study',
+      attendees: Math.round((attendanceStats.members + attendanceStats.visitors) * 0.4)
+    }
+  ];
+  
+  timelineItems.forEach(item => {
+    const timelineItem = document.createElement("div");
+    timelineItem.className = "timeline-item";
+    timelineItem.innerHTML = `
+      <div class="timeline-date">${item.date}</div>
+      <div>${item.event} - ${item.attendees || ''}</div>
+    `;
+    timeline.appendChild(timelineItem);
+  });
+}
+
+// Load data and initialize dashboard
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    // Fetch data from APIs
+    const [membersResponse, attendanceResponse] = await Promise.all([
+      fetch("/saveToDB").then(res => res.json()),
+      fetch("/attendance").then(res => res.json())
+    ]);
+    
+    // Process data
+    const memberStats = processMemberData(membersResponse);
+    const attendanceStats = processAttendanceData(attendanceResponse);
+    
+    // Initialize dashboard
+    initCharts(memberStats, attendanceStats);
+    populateDashboard(memberStats, attendanceStats);
+    
+  } catch (error) {
+    console.error("Error loading data:", error);
+    
+    // Fallback to sample data
+    // Note: sampleMembers represents /saveToDB response (member data)
+    const sampleMembers = [
+      {
+        "id": 1752797525829,
+        "name": "Andrew Ababio",
+        "email": "honbrewandy@yahoo.com",
+        "phone": "0548099730",
+        "gender": "Male",
+        "age": "14",
+        "status": "Single",
+        "dob": "2025-07-18"
+      },
+      {
+        "id": 1752880472425,
+        "name": "Andrew Ababio",
+        "email": "honbrewandy@yahoo.com",
+        "phone": "0548099730",
+        "gender": "Male",
+        "status": "Single",
+        "dob": "2025-07-18"
+      }
+    ];
+    
+    // Note: sampleAttendance represents /attendance response (attendance records)
+    const sampleAttendance = [
+      {
+        "type": "member",
+        "name": "male",
+        "gender": "male",
+        "ageGroup": "youth",
+        "date": "2025-07-24",
+        "comment": "Thnkx"
+      },
+      {
+        "type": "visitor",
+        "gender": "female",
+        "ageGroup": "youth",
+        "date": "2025-07-24",
+        "comment": "Noted"
+      }
+    ];
+    
+    const memberStats = processMemberData(sampleMembers);
+    const attendanceStats = processAttendanceData(sampleAttendance);
+    
+    initCharts(memberStats, attendanceStats);
+    populateDashboard(memberStats, attendanceStats);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Church Attendance Form</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+height: 100vh;
+width: 100vw;
+display: flex;
+justify-content: center;
+align-items: center;
+overflow: hidden;
+}
+
+header {
+text-align: center;
+margin-bottom: 20px;
+}
+
+header h1 {
+font-size: 1.8rem;
+color: #2c3e50;
+margin-bottom: 6px;
+text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+header p {
+color: #7f8c8d;
+font-size: 0.9rem;
+}
+
+.container {
+background: #fff;
+padding: 25px;
+border-radius: 12px;
+width: 100%;
+max-width: 700px;
+height: 90vh;
+max-height: 700px;
+display: flex;
+flex-direction: column;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+transition: transform 0.3s ease;
+}
+
+.container:hover {
+transform: translateY(-3px);
+}
+
+.form-wrapper {
+flex: 1;
+display: flex;
+flex-direction: column;
+overflow-y: auto;
+padding-right: 5px;
+}
+
+.form-wrapper::-webkit-scrollbar {
+width: 6px;
+}
+
+.form-wrapper::-webkit-scrollbar-track {
+background: #f1f1f1;
+border-radius: 10px;
+}
+
+.form-wrapper::-webkit-scrollbar-thumb {
+background: #c1c1c1;
+border-radius: 10px;
+}
+
+.form-wrapper::-webkit-scrollbar-thumb:hover {
+background: #a1a1a1;
+}
+
+.form-group {
+display: flex;
+flex-direction: column;
+margin-bottom: 18px;
+}
+
+.form-group label {
+font-weight: 600;
+font-size: 0.95rem;
+color: #2c3e50;
+margin-bottom: 6px;
+display: flex;
+align-items: center;
+}
+
+.form-group label::before {
+content: "•";
+color: #3498db;
+margin-right: 8px;
+font-size: 1.2rem;
+}
+
+input, select, textarea {
+width: 100%;
+padding: 12px 15px;
+border-radius: 8px;
+border: 2px solid #e1e8ed;
+font-size: 1rem;
+transition: all 0.3s ease;
+background-color: #f8f9fa;
+}
+
+input:focus, select:focus, textarea:focus {
+outline: none;
+border-color: #3498db;
+box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+background-color: #fff;
+}
+
+textarea {
+resize: vertical;
+min-height: 80px;
+}
+
+button {
+margin-top: 10px;
+width: 100%;
+padding: 14px;
+background: linear-gradient(135deg, #3498db, #2980b9);
+color: white;
+border: none;
+font-size: 1.05rem;
+font-weight: 600;
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 10px;
+box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+flex-shrink: 0;
+}
+
+button:hover {
+background: linear-gradient(135deg, #2980b9, #2573a7);
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+button:active {
+transform: translateY(0);
+}
+
+button:disabled {
+background: #bdc3c7;
+cursor: not-allowed;
+transform: none;
+box-shadow: none;
+}
+
+#message {
+margin-top: 15px;
+font-weight: 600;
+text-align: center;
+font-size: 1rem;
+padding: 12px;
+border-radius: 8px;
+flex-shrink: 0;
+}
+
+.success {
+background-color: #d4edda;
+color: #155724;
+border: 1px solid #c3e6cb;
+}
+
+.error {
+background-color: #f8d7da;
+color: #721c24;
+border: 1px solid #f5c6cb;
+}
+
+.form-title {
+text-align: center;
+margin-bottom: 20px;
+color: #3498db;
+font-size: 1.3rem;
+position: relative;
+flex-shrink: 0;
+}
+
+.form-title::after {
+content: "";
+display: block;
+width: 50px;
+height: 3px;
+background: #3498db;
+margin: 8px auto;
+border-radius: 3px;
+}
+
+.required::after {
+content: " *";
+color: #e74c3c;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+.container {
+padding: 20px;
+width: 95%;
+height: 95vh;
+}
+
+header h1 {
+font-size: 1.5rem;
+}
+
+.form-title {
+font-size: 1.2rem;
+margin-bottom: 15px;
+}
+
+input, select, textarea {
+padding: 10px 12px;
+font-size: 0.95rem;
+}
+
+button {
+padding: 12px;
+font-size: 1rem;
+}
+
+header p {
+font-size: 0.85rem;
+}
+}
+
+@media (max-width: 400px) {
+.container {
+padding: 15px;
+}
+
+header h1 {
+font-size: 1.3rem;
+}
+
+.form-title {
+font-size: 1.1rem;
+}
+
+.form-group {
+margin-bottom: 15px;
+}
+
+.form-group label {
+font-size: 0.9rem;
+}
+}
+
+/* Animation for form elements */
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(15px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+animation: fadeIn 0.5s ease-out;
+}
+
+.form-group {
+animation: fadeIn 0.4s ease-out;
+animation-fill-mode: both;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
+.form-group:nth-child(5) { animation-delay: 0.5s; }
+.form-group:nth-child(6) { animation-delay: 0.6s; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>Church Attendance Form</h1>
+<p>Welcome! Please fill in your details</p>
+</header>
+
+<div class="form-wrapper">
+<div class="form-title">Attendance Information</div>
+
+<form id="attendanceForm">
+<div class="form-group">
+<label for="personType" class="required">Person Type</label>
+<select id="personType" required>
+<option value="">Select Type</option>
+<option value="member">Member</option>
+<option value="visitor">Visitor</option>
+</select>
+</div>
+
+<div class="form-group">
+<label for="name" class="required">Full Name</label>
+<input type="text" id="name" placeholder="Enter your full name" required />
+</div>
+
+<div class="form-group">
+<label for="gender" class="required">Gender</label>
+<select id="gender" required>
+<option value="">Select Gender</option>
+<option value="male">Male</option>
+<option value="female">Female</option>
+</select>
+</div>
+
+<div class="form-group">
+<label for="age" class="required">Age</label>
+<input type="number" id="age" placeholder="Enter your age" min="1" required />
+</div>
+
+<div class="form-group">
+<label for="date" class="required">Date</label>
+<input type="date" id="date" required />
+</div>
+
+<div class="form-group">
+<label for="comment" class="required">Comment/Feedback</label>
+<textarea id="comment" placeholder="Share your thoughts or feedback..." required></textarea>
+</div>
+
+<button type="submit" id="submitBtn">
+<span id="btnText">Submit Attendance</span>
+<span id="loader" style="display:none;">⏳</span>
+</button>
+
+<div id="message"></div>
+</form>
+</div>
+</div>
+
+<script>
+const form = document.getElementById("attendanceForm");
+const submitBtn = document.getElementById("submitBtn");
+const btnText = document.getElementById("btnText");
+const loader = document.getElementById("loader");
+const messageDiv = document.getElementById("message");
+
+// Set today's date as default
+document.getElementById('date').valueAsDate = new Date();
+
+form.addEventListener("submit", async (e) => {
+e.preventDefault();
+
+const type = form.personType.value;
+const name = form.name.value.trim();
+const gender = form.gender.value;
+const age = parseInt(form.age.value);
+const date = form.date.value;
+const comment = form.comment.value.trim();
+
+if (!type || !name || !gender || !age || !date || !comment) {
+Swal.fire({
+icon: 'warning',
+title: 'Incomplete Form',
+text: 'Please fill all required fields.'
+});
+return;
+}
+
+const ageGroup =
+age >= 1 && age <= 17 ? "children" :
+age >= 18 && age <= 39 ? "youth" :
+"adult";
+
+const attendance = {
+type,
+name,
+gender,
+ageGroup,
+date,
+comment
+};
+
+// Show loader
+submitBtn.disabled = true;
+btnText.style.display = "none";
+loader.style.display = "inline";
+
+try {
+// Simulate API call
+await new Promise(resolve => setTimeout(resolve, 1500));
+
+// Success simulation
+Swal.fire({
+icon: 'success',
+title: 'Success!',
+text: 'Attendance saved successfully!',
+timer: 3000,
+showConfirmButton: false
+});
+
+form.reset();
+document.getElementById('date').valueAsDate = new Date();
+
+} catch (err) {
+Swal.fire({
+icon: 'error',
+title: 'Connection Error',
+text: 'Could not connect to server.'
+});
+} finally {
+// Reset button
+submitBtn.disabled = false;
+btnText.style.display = "inline";
+loader.style.display = "none";
+}
+});
+</script>
+</body>
+</html>

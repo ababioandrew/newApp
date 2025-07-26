@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>All & Upcoming Birthdays</title>
+<script src="https://cdn.tailwindcss.com "></script>
+<style>
+:root {
+--bg: #f0f2f5;
+--card-bg: #ffffff;
+--text: #2c3e50;
+--border: #dcdde1;
+--accent: #3498db;
+--highlight: #2ecc71;
+}
+
+[data-theme="dark"] {
+--bg: #1e1e2f;
+--card-bg: #2f3542;
+--text: #ecf0f1;
+--border: #57606f;
+--accent: #74b9ff;
+--highlight: #55efc4;
+}
+
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background-color: var(--bg);
+color: var(--text);
+transition: background-color 0.3s, color 0.3s;
+}
+
+.card-hover:hover {
+transform: scale(1.03);
+transition: transform 0.3s;
+box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.fade-in {
+animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+from {
+opacity: 0;
+transform: translateY(10px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+</style>
+</head>
+<body class="min-h-screen">
+<!-- Marquee Announcement -->
+<div class="bg-blue-500 text-white p-2 text-sm font-bold">
+<marquee behavior="scroll" direction="left">📢 Announcement: Happy birthday to you.</marquee>
+</div>
+
+<!-- Header -->
+<header class="bg-gradient-to-r from-blue-800 to-blue-600 text-white text-center py-4 shadow-md">
+<h1 class="text-2xl font-bold">Birthday Celebrants</h1>
+</header>
+
+<!-- Navigation -->
+<nav class="bg-blue-700 text-white px-4 py-3 flex justify-between items-center flex-wrap shadow-md">
+<!-- Left side: Home link -->
+<div class="flex items-center">
+<a href="/" class="text-white hover:underline font-medium mr-6">🏠 Home</a>
+</div>
+
+<!-- Right side: Search, Theme Toggle, Date -->
+<div class="flex items-center space-x-2 mt-2 md:mt-0">
+<input id="searchInput" type="text" placeholder="Search..." class="p-1 px-2 rounded text-black">
+<button onclick="toggleDarkMode()" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded">🌓</button>
+<div id="date" class="text-sm ml-3"></div>
+</div>
+</nav>
+
+<!-- Main Content -->
+<main class="p-4 fade-in max-w-6xl mx-auto">
+<h2 class="text-2xl font-bold mb-6 text-center">🎂 Upcoming & 📅 All Birthdays</h2>
+
+<!-- Birthday Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Upcoming Birthdays -->
+<section class="bg-white dark:bg-gray-800 p-6 rounded shadow card-hover">
+<h3 class="text-xl font-semibold mb-4 text-blue-600">🎂 Upcoming Birthdays (Next 7 Days)</h3>
+<ul id="upcomingBirthdays" class="list-disc pl-5 space-y-2">
+<!-- Will be populated by JavaScript -->
+</ul>
+</section>
+
+<!-- All Birthdays -->
+<section class="bg-white dark:bg-gray-800 p-6 rounded shadow card-hover">
+<h3 class="text-xl font-semibold mb-4 text-purple-600">📅 All Birthdays</h3>
+<ul id="allBirthdays" class="list-disc pl-5 space-y-2">
+<!-- Will be populated by JavaScript -->
+</ul>
+</section>
+</div>
+</main>
+
+<!-- Footer -->
+<footer class="text-center p-4 text-sm text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-900 mt-6">
+&copy; <span id="year"></span> Church Management System
+</footer>
+
+<!-- JavaScript -->
+<script>
+document.getElementById("date").innerText = new Date().toDateString();
+document.getElementById("year").innerText = new Date().getFullYear();
+
+function toggleDarkMode() {
+const html = document.documentElement;
+const current = html.getAttribute('data-theme');
+const isDark = current === 'dark';
+html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+document.body.classList.toggle('bg-gray-100', isDark);
+document.body.classList.toggle('bg-gray-900', !isDark);
+document.body.classList.toggle('text-white', !isDark);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+const upcomingList = document.getElementById("upcomingBirthdays");
+const allBirthdaysList = document.getElementById("allBirthdays");
+
+fetch("/saveToDB")
+.then(res => res.json())
+.then(users => {
+const today = new Date();
+users.forEach(user => {
+if (!user.dob) return;
+
+const dob = new Date(user.dob);
+const birthdayThisYear = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+if (birthdayThisYear < today) birthdayThisYear.setFullYear(today.getFullYear() + 1);
+
+const daysUntil = Math.floor((birthdayThisYear - today) / (1000 * 60 * 60 * 24));
+
+const li = document.createElement("li");
+li.textContent = `${user.name} — ${user.dob}`;
+
+if (daysUntil >= 0 && daysUntil <= 7) upcomingList.appendChild(li);
+allBirthdaysList.appendChild(li.cloneNode(true));
+});
+})
+.catch(err => {
+console.error("Failed to load birthdays:", err);
+upcomingList.innerHTML = "<li>No data available</li>";
+allBirthdaysList.innerHTML = "<li>No data available</li>";
+});
+});
+</script>
+</body>
+</html>

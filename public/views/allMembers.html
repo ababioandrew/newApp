@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>User Details UI</title>
+<style>
+:root {
+--bg: #f0f2f5;
+--card-bg: #ffffff;
+--text: #2c3e50;
+--border: #dcdde1;
+--accent: #3498db;
+--highlight: #2ecc71;
+--font-size-base: 0.85rem;
+--font-size-small: 0.75rem;
+}
+
+[data-theme="dark"] {
+--bg: #1e1e2f;
+--card-bg: #2f3542;
+--text: #ecf0f1;
+--border: #57606f;
+--accent: #74b9ff;
+--highlight: #55efc4;
+}
+
+body {
+margin: 0;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background-color: var(--bg);
+color: var(--text);
+font-size: var(--font-size-base);
+transition: background-color 0.3s, color 0.3s;
+}
+
+.marquee {
+background: var(--accent);
+color: white;
+padding: 0.4rem;
+font-weight: bold;
+font-size: var(--font-size-small);
+}
+
+marquee {
+font-size: var(--font-size-small);
+}
+
+.app-container {
+max-width: 1000px;
+margin: auto;
+padding: 1rem;
+}
+
+header {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.5rem;
+margin-bottom: 1rem;
+}
+
+h1 {
+font-size: 1.5rem;
+color: var(--accent);
+margin: 0.5rem 0;
+}
+
+#search {
+padding: 0.4rem 0.8rem;
+font-size: 0.85rem;
+width: 90%;
+max-width: 280px;
+border: 1px solid var(--border);
+border-radius: 4px;
+background-color: #fff;
+box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+#search:focus {
+outline: none;
+border-color: var(--accent);
+}
+
+#themeToggle {
+background-color: var(--accent);
+color: white;
+border: none;
+padding: 0.4rem 1rem;
+border-radius: 4px;
+font-size: 0.8rem;
+cursor: pointer;
+}
+
+main {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+gap: 1rem;
+}
+
+.user-card {
+background-color: var(--card-bg);
+border: 1px solid var(--border);
+border-radius: 8px;
+padding: 0.8rem;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.user-card h3 {
+margin: 0;
+font-size: 1rem;
+color: var(--accent);
+}
+
+.user-card p {
+margin: 0.2rem 0;
+font-size: 0.8rem;
+}
+
+.birthdays-section {
+margin: 1.5rem 0;
+}
+
+.birthdays-section h2 {
+margin: 0.5rem 0;
+font-size: 1rem;
+color: var(--accent);
+border-bottom: 1px solid var(--border);
+padding-bottom: 0.3rem;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+background-color: var(--card-bg);
+font-size: 0.75rem;
+}
+
+th, td {
+padding: 0.4rem 0.6rem;
+text-align: left;
+border-bottom: 1px solid var(--border);
+}
+
+th {
+background-color: var(--accent);
+color: white;
+font-weight: bold;
+}
+
+tr:hover {
+background-color: rgba(0, 0, 0, 0.03);
+}
+
+.upcoming {
+color: var(--highlight);
+font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+h1 {
+font-size: 1.2rem;
+}
+
+#themeToggle {
+font-size: 0.7rem;
+}
+
+.user-card h3 {
+font-size: 0.9rem;
+}
+
+.user-card p {
+font-size: 0.7rem;
+}
+}
+</style>
+</head>
+<body>
+<div class="marquee">
+<marquee behavior="scroll" direction="left">📢 Announcement: Please update your profile information before the end of the month.</marquee>
+</div>
+
+<div class="app-container">
+<header>
+<h1>User Directory</h1>
+<input type="text" id="search" placeholder="Search by name..." />
+<button id="themeToggle">Toggle Theme</button>
+</header>
+
+<section class="birthdays-section">
+<h2>🎂 Upcoming Birthdays (Next 7 Days)</h2>
+<ul id="upcomingBirthdays"></ul>
+</section>
+
+<section class="birthdays-section">
+<h2>📅 All Birthdays</h2>
+<ul id="allBirthdays"></ul>
+</section>
+
+<main id="userContainer"></main>
+</div>
+<script>
+function renderBirthdayLists(users) {
+const today = new Date();
+const upcomingTable = document.getElementById("upcomingBirthdays");
+const allTable = document.getElementById("allBirthdays");
+
+// Clear existing
+upcomingTable.innerHTML = `
+<table>
+<thead><tr><th>Name</th><th>Birthday</th></tr></thead>
+<tbody id="upcomingRows"></tbody>
+</table>`;
+allTable.innerHTML = `
+<table>
+<thead><tr><th>Name</th><th>Birthday</th></tr></thead>
+<tbody id="allRows"></tbody>
+</table>`;
+
+const upcomingRows = document.getElementById("upcomingRows");
+const allRows = document.getElementById("allRows");
+
+users.forEach(user => {
+if (!user.dob) return;
+const dob = new Date(user.dob);
+const birthdayThisYear = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+
+if (birthdayThisYear < today) {
+birthdayThisYear.setFullYear(today.getFullYear() + 1);
+}
+
+const daysUntil = Math.floor((birthdayThisYear - today) / (1000 * 60 * 60 * 24));
+const tr = document.createElement("tr");
+tr.innerHTML = `<td>${user.name}</td><td>${user.dob}</td>`;
+
+if (daysUntil >= 0 && daysUntil <= 7) {
+tr.classList.add("upcoming");
+upcomingRows.appendChild(tr);
+}
+
+allRows.appendChild(tr.cloneNode(true));
+});
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+const container = document.getElementById("userContainer");
+const searchInput = document.getElementById("search");
+const themeToggle = document.getElementById("themeToggle");
+const upcomingList = document.getElementById("upcomingBirthdays");
+const allBirthdaysList = document.getElementById("allBirthdays");
+
+let users = [];
+
+// Fetch user data from backend
+fetch("/saveToDB")
+.then(res => res.json())
+.then(data => {
+users = data;
+renderUsers(users);
+renderBirthdayLists(users);
+})
+.catch(err => {
+console.error("Failed to fetch users:", err);
+});
+
+function renderUsers(data) {
+container.innerHTML = "";
+const today = new Date();
+
+data.forEach(user => {
+const card = document.createElement("div");
+card.classList.add("user-card");
+
+let dobDisplay = "";
+let isBirthdaySoon = false;
+
+if (user.dob) {
+const dobDate = new Date(user.dob);
+const upcomingBirthday = new Date(today.getFullYear(), dobDate.getMonth(), dobDate.getDate());
+
+// If birthday has already passed this year, set to next year
+if (upcomingBirthday < today) {
+upcomingBirthday.setFullYear(today.getFullYear() + 1);
+}
+
+const diffDays = (upcomingBirthday - today) / (1000 * 60 * 60 * 24);
+if (diffDays >= 0 && diffDays <= 7) {
+isBirthdaySoon = true;
+dobDisplay = `<p style="color: green;"><strong>🎉 Birthday:</strong> ${user.dob} (Soon!)</p>`;
+} else {
+dobDisplay = `<p><strong>Birthday:</strong> ${user.dob}</p>`;
+}
+}
+
+card.innerHTML = `
+<h3>${user.name}</h3>
+<p><strong>Email:</strong> ${user.email}</p>
+<p><strong>Phone:</strong> ${user.phone}</p>
+<p><strong>Gender:</strong> ${user.gender}</p>
+<p><strong>Age:</strong> ${user.age}</p>
+<p><strong>Status:</strong> ${user.status}</p>
+${dobDisplay}
+<p><strong>ID:</strong> ${user.id}</p>
+`;
+
+if (isBirthdaySoon) {
+card.style.borderColor = "green";
+card.style.boxShadow = "0 0 10px green";
+}
+
+container.appendChild(card);
+});
+}
+
+function renderBirthdayLists(users) {
+const today = new Date();
+upcomingList.innerHTML = "";
+allBirthdaysList.innerHTML = "";
+
+users.forEach(user => {
+if (!user.dob) return;
+
+const dob = new Date(user.dob);
+const birthdayThisYear = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+
+if (birthdayThisYear < today) {
+birthdayThisYear.setFullYear(today.getFullYear() + 1);
+}
+
+const daysUntil = Math.floor((birthdayThisYear - today) / (1000 * 60 * 60 * 24));
+
+const li = document.createElement("li");
+li.textContent = `${user.name} — ${user.dob}`;
+
+if (daysUntil >= 0 && daysUntil <= 7) {
+li.classList.add("upcoming");
+upcomingList.appendChild(li);
+}
+
+allBirthdaysList.appendChild(li.cloneNode(true));
+});
+}
+
+searchInput.addEventListener("input", (e) => {
+const value = e.target.value.toLowerCase();
+const filtered = users.filter(user =>
+user.name.toLowerCase().includes(value)
+);
+renderUsers(filtered);
+renderBirthdayLists(filtered);
+});
+
+themeToggle.addEventListener("click", () => {
+const currentTheme = document.documentElement.getAttribute("data-theme");
+document.documentElement.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
+});
+
+document.documentElement.setAttribute("data-theme", "light");
+});
+</script>
+</body>
+</html>
