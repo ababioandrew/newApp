@@ -246,14 +246,49 @@ body {
   margin-top: 10px;
 }
 
-/* Mobile-first responsive adjustments */
+/* Mobile menu toggle */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .main-content {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  
+  .card[style*="grid-column: span 2"] {
+    grid-column: span 2;
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
   
   .sidebar {
-    display: none; /* Consider a mobile menu instead */
+    display: none;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 200px;
+    height: calc(100vh - 100px);
+    z-index: 100;
+    overflow-y: auto;
+  }
+  
+  .sidebar.active {
+    display: block;
+  }
+  
+  .menu-toggle {
+    display: block;
   }
   
   .main-content {
@@ -266,6 +301,25 @@ body {
 }
 
 @media (max-width: 480px) {
+  .navbar {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .nav-links {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .search-bar {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .search-bar input {
+    flex-grow: 1;
+  }
+  
   .main-content {
     grid-template-columns: 1fr;
   }
@@ -274,24 +328,42 @@ body {
     grid-column: span 1;
   }
   
-  .navbar {
-    flex-direction: column;
-  }
-  
-  .nav-links {
-    justify-content: center;
-  }
-  
-  .search-bar {
-    justify-content: center;
-  }
-  
   .stat-value {
     font-size: 16px;
   }
   
   .chart-container {
     height: 100px;
+  }
+  
+  #ageGroups {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .navbar, .marquee, .sidebar, .menu-toggle {
+    display: none !important;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .main-content {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  
+  body {
+    padding: 0;
+    background: white;
+    color: black;
+  }
+  
+  .card {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
 </style>
@@ -304,6 +376,7 @@ body {
   
   <nav class="navbar">
     <div class="nav-links">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
       <a href="#">Dashboard</a>
       <a href="#">Visitors</a>
       <a href="#">Offering</a>
@@ -322,7 +395,7 @@ body {
   </div>
   
   <div class="dashboard-grid">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <h3>Quick Links</h3>
       <ul>
         <li><a href="/allMembers">Membership</a></li>
@@ -427,6 +500,24 @@ function toggleDarkMode() {
   const current = html.getAttribute('data-theme');
   html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
 }
+
+// Mobile menu toggle
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('active');
+}
+
+// Close sidebar when clicking outside
+document.addEventListener('click', function(event) {
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+  
+  if (!sidebar.contains(event.target)) {
+    if (event.target !== menuToggle) {
+      sidebar.classList.remove('active');
+    }
+  }
+});
 
 // Process member data (from /saveToDB endpoint)
 function processMemberData(members) {
