@@ -20,5 +20,13 @@
     "ageGroup": "adult",
     "date": "2025-07-24",
     "comment": "Thanks"
+  },
+  {
+    "type": "visitor",
+    "name": "Erico",
+    "gender": "male",
+    "ageGroup": "children",
+    "date": "2025-07-28",
+    "comment": "Thk"
   }
 ]
