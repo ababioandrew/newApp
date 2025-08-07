@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Dashboard</title>
+<style>
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+body { 
+  display: flex; 
+  min-height: 100vh; 
+  background: #f4f6f9; 
+  color: #333;
+  font-size: 0.9rem;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #2f3542;
+  color: #fff;
+  padding: 15px 0;
+  position: fixed;
+  height: 100vh;
+  transition: all 0.3s;
+}
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  padding: 0 15px;
+}
+.sidebar a {
+  display: block;
+  color: #ddd;
+  padding: 10px 15px;
+  text-decoration: none;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+.sidebar a:hover {
+  background: #57606f;
+  color: #fff;
+}
+.dropdown-btn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #ddd;
+  width: 100%;
+  text-align: left;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dropdown-btn:hover {
+  background: #57606f;
+  color: #fff;
+}
+.dropdown-container {
+  display: none;
+  background-color: #3e4551;
+}
+.dropdown-container a {
+  padding-left: 25px;
+  font-size: 0.85rem;
+}
+
+/* Top navbar */
+.topnav {
+  position: fixed;
+  left: 220px;
+  right: 0;
+  height: 50px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  z-index: 100;
+}
+.topnav input {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* Main content */
+.main {
+  margin-left: 220px;
+  margin-top: 50px;
+  padding: 15px;
+  width: calc(100% - 220px);
+}
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+}
+.card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+.card h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+.card p {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.btn {
+  display: inline-block;
+  padding: 8px 15px;
+  background: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #2980b9;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+    overflow: hidden;
+  }
+  .sidebar h2, .dropdown-btn span {
+    display: none;
+  }
+  .sidebar a {
+    text-align: center;
+    padding: 10px 5px;
+  }
+  .dropdown-container a {
+    padding-left: 5px;
+  }
+  .main {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+  .topnav {
+    left: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topnav {
+    flex-direction: column;
+    height: auto;
+    padding: 8px;
+  }
+  .topnav div {
+    width: 100%;
+    margin-top: 5px;
+  }
+  .topnav input {
+    width: 100%;
+  }
+  .btn {
+    display: block;
+    width: 100%;
+    margin-right: 0;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Admin Panel</h2>
+  <a href="#">Dashboard</a>
+  <button class="dropdown-btn">Members <span>▼</span></button>
+  <div class="dropdown-container">
+    <a href="http://localhost:4000/addMembers">Add Member</a>
+    <a href="http://localhost:4000/allMembers">View Members</a>
+  </div>
+  <button class="dropdown-btn">Messages <span>▼</span></button>
+  <div class="dropdown-container">
+    <a href="#">Send Message</a>
+    <a href="#">Inbox</a>
+  </div>
+  <button class="dropdown-btn">Reports <span>▼</span></button>
+  <div class="dropdown-container">
+    <a href="#">Feedback</a>
+    <a href="#">Audit Logs</a>
+  </div>
+  <a href="#">Settings</a>
+  <a href="#">Logout</a>
+</div>
+
+<div class="topnav">
+  <div>Welcome, Admin</div>
+  <div>
+    <input type="text" placeholder="Search...">
+  </div>
+</div>
+
+<div class="main">
+  <div class="card">
+    <h2>Quick Actions</h2>
+    <a href="http://localhost:4000/addMembers" class="btn">Add Member</a>
+    <a href="http://localhost:4000/allMembers" class="btn">View Members</a>
+    <a href="http://localhost:4000/sendMessage" class="btn">Send Message</a>
+    <a href="http://localhost:4000/admin" class="btn">View Feedback</a>
+  </div>
+
+  <div class="card">
+    <h3>System Overview</h3>
+    <p>Total Members: <strong>152</strong></p>
+    <p>Pending Messages: <strong>5</strong></p>
+    <p>Unread Feedback: <strong>3</strong></p>
+  </div>
+</div>
+
+<script>
+const dropdowns = document.querySelectorAll(".dropdown-btn");
+dropdowns.forEach((btn) => {
+  btn.addEventListener("click", function () {
+    this.classList.toggle("active");
+    const dropdownContent = this.nextElementSibling;
+    dropdownContent.style.display =
+      dropdownContent.style.display === "block" ? "none" : "block";
+  });
+});
+</script>
+</body>
+</html>
