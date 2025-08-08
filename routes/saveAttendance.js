@@ -2,12 +2,15 @@ const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const router = express.Router();
-const DB_PATH = path.join(__dirname, '../models/saveAttendance.json');
 
-function saveRecord(record, res) {
-const { type, name, gender, ageGroup, date, comment } = record;
+const DB_PATH = path.join(__dirname, "../models/saveAttendance.json");
+
+router.post("/saveAttendance", (req, res) => {
+try {
+const { type, name, gender, ageGroup, date, comment } = req.body;
 
 if (!type || !name || !gender || !ageGroup || !date || !comment) {
+console.error("Missing fields:", req.body);
 return res.status(400).json({ message: "Missing required fields." });
 }
 
@@ -19,26 +22,19 @@ allData = JSON.parse(fs.readFileSync(DB_PATH, "utf8"));
 allData.push({ type, name, gender, ageGroup, date, comment });
 fs.writeFileSync(DB_PATH, JSON.stringify(allData, null, 2));
 
-return res.json({ message: "Attendance saved successfully!" });
+res.json({ message: "Attendance saved successfully!" });
+} catch (err) {
+console.error("Error saving attendance:", err);
+res.status(500).json({ message: "Server error." });
 }
-
-router.post("/saveAttendance", (req, res) => {
-saveRecord(req.body, res);
 });
 
+// Optional: get all attendance records
 router.get("/saveAttendance", (req, res) => {
-const { type, name, gender, ageGroup, date, comment } = req.query;
-
-if (type && name && gender && ageGroup && date && comment) {
-return saveRecord(req.query, res);
-}
-
-if (!fs.existsSync(DB_PATH)) {
-return res.json([]);
-}
-
+if (!fs.existsSync(DB_PATH)) return res.json([]);
 const data = JSON.parse(fs.readFileSync(DB_PATH, "utf8"));
 res.json(data);
 });
 
 module.exports = router;
+
