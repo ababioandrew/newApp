@@ -309,44 +309,6 @@ const visitorSearch = document.getElementById("visitorSearch");
 let globalData = [];
 
 function displayRecords(data) {
-<<<<<<< HEAD
-globalData = data;
-renderFilteredRecords();
-}
-
-function renderFilteredRecords() {
-const memberQuery = memberSearch.value.toLowerCase();
-const visitorQuery = visitorSearch.value.toLowerCase();
-
-membersContainer.innerHTML = "";
-visitorsContainer.innerHTML = "";
-
-const members = globalData.filter(r => r.type === "member" && (!memberQuery || (r.name || "").toLowerCase().includes(memberQuery)));
-const visitors = globalData.filter(r => r.type === "visitor" && (!visitorQuery || (r.name || "").toLowerCase().includes(visitorQuery)));
-
-if (members.length === 0) membersContainer.innerHTML = "<div class='no-records'>No member records found.</div>";
-if (visitors.length === 0) visitorsContainer.innerHTML = "<div class='no-records'>No visitor records found.</div>";
-
-members.reverse().forEach(record => membersContainer.appendChild(createRecordDiv(record)));
-visitors.reverse().forEach(record => visitorsContainer.appendChild(createRecordDiv(record)));
-
-document.getElementById("memberCount").textContent = `(${members.length})`;
-document.getElementById("visitorCount").textContent = `(${visitors.length})`;
-document.getElementById("totalCount").textContent = `Total Attendance: ${members.length + visitors.length}`;
-}
-
-function createRecordDiv(record) {
-const div = document.createElement("div");
-div.className = "record";
-div.innerHTML = `
-<p><span class="label">Name:</span> ${record.name || 'N/A'}</p>
-<p><span class="label">Gender:</span> ${record.gender}</p>
-<p><span class="label">Age Group:</span> ${record.ageGroup}</p>
-<p><span class="label">Date:</span> ${record.date}</p>
-<p><span class="label">Comment:</span> ${record.comment}</p>
-`;
-return div;
-=======
   globalData = data;
   renderFilteredRecords();
 }
@@ -383,7 +345,6 @@ function createRecordDiv(record) {
     <p><span class="label">Comment:</span> <span class="value">${record.comment}</span></p>
   `;
   return div;
->>>>>>> b12a3f3889428b882b250f7b662fea234565a36c
 }
 
 // Listen for input changes
@@ -392,17 +353,6 @@ visitorSearch.oninput = renderFilteredRecords;
 
 // Fetch data (replace sampleData with fetch for real app)
 fetch("/saveAttendance")
-<<<<<<< HEAD
-.then(res => res.json())
-.then(data => displayRecords(data))
-.catch(err => {
-membersContainer.innerHTML = "<div class='no-records' style='color:red'>Error loading data.</div>";
-visitorsContainer.innerHTML = "<div class='no-records' style='color:red'>Error loading data.</div>";
-});
-</script>
-</body>
-</html>
-=======
   .then(res => res.json())
   .then(data => displayRecords(data))
   .catch(err => {
@@ -412,4 +362,3 @@ visitorsContainer.innerHTML = "<div class='no-records' style='color:red'>Error l
 </script>
 </body>
 </html>
->>>>>>> b12a3f3889428b882b250f7b662fea234565a36c
