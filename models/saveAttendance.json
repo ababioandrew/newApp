@@ -28,5 +28,13 @@
     "ageGroup": "children",
     "date": "2025-07-28",
     "comment": "Thk"
+  },
+  {
+    "type": "member",
+    "name": "Andrew Ababio",
+    "gender": "male",
+    "ageGroup": "youth",
+    "date": "2025-08-07",
+    "comment": "Noted"
   }
 ]
