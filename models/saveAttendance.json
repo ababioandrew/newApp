@@ -28,8 +28,6 @@
     "ageGroup": "children",
     "date": "2025-07-28",
     "comment": "Thk"
-<<<<<<< HEAD
-=======
   },
   {
     "type": "member",
@@ -38,6 +36,5 @@
     "ageGroup": "youth",
     "date": "2025-08-07",
     "comment": "Noted"
->>>>>>> b12a3f3889428b882b250f7b662fea234565a36c
   }
 ]
