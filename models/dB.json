@@ -94,5 +94,18 @@
     "age": "34",
     "status": "Single",
     "id": "1753656446284"
+<<<<<<< HEAD
+=======
+  },
+  {
+    "name": "Andrew Ababio",
+    "email": "honbrew78@yahoo.com",
+    "phone": "0548099736",
+    "gender": "Male",
+    "dob": "2025-08-07",
+    "age": "34",
+    "status": "Single",
+    "id": "1754607457309"
+>>>>>>> b12a3f3889428b882b250f7b662fea234565a36c
   }
 ]

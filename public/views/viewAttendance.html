@@ -1,334 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>View Attendance</title>
-<style>
-* {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Attendance</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-height: 100vh;
-width: 100vw;
-display: flex;
-justify-content: center;
-align-items: center;
-overflow: hidden;
-padding: 0;
-margin: 0;
-}
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
+    }
 
-.back-home {
-position: absolute;
-top: 1rem;
-left: 1rem;
-background-color: #226cf5;
-color: #92f520;
-padding: 0.1px 7px;
-text-decoration: none;
-}.back-home:hover,
+    .back-home {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background-color: #226cf5;
+      color: #92f520;
+      padding: 0.1px 7px;
+      text-decoration: none;
+    }
 
-.main-container {
-background: #fff;
-padding: 25px;
-border-radius: 12px;
-width: 95%;
-max-width: 1200px;
-height: 95vh;
-max-height: 800px;
-display: flex;
-flex-direction: column;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-transition: transform 0.3s ease;
-}
+    .main-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 1000px;
+      height: auto;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+    }
 
-.main-container:hover {
-transform: translateY(-3px);
-}
+    .main-container:hover {
+      transform: translateY(-3px);
+    }
 
-h1 {
-color: #2c3e50;
-margin-bottom: 20px;
-text-align: center;
-font-size: 1.8rem;
-text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.6rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
 
-.container {
-flex: 1;
-display: flex;
-gap: 2rem;
-justify-content: center;
-flex-wrap: wrap;
-width: 100%;
-overflow-y: auto;
-padding-right: 5px;
-}
+    .container {
+      flex: 1;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: 100%;
+      overflow-y: auto;
+    }
 
-.container::-webkit-scrollbar {
-width: 8px;
-}
+    .section {
+      flex: 1 1 45%;
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border-left: 6px solid #3498db;
+      min-width: 300px;
+      display: flex;
+      flex-direction: column;
+    }
 
-.container::-webkit-scrollbar-track {
-background: #f1f1f1;
-border-radius: 10px;
-}
+    .visitor-section {
+      border-left-color: #e67e22;
+    }
 
-.container::-webkit-scrollbar-thumb {
-background: #c1c1c1;
-border-radius: 10px;
-}
+    .section h2 {
+      color: #3498db;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      position: relative;
+      padding-bottom: 10px;
+    }
 
-.container::-webkit-scrollbar-thumb:hover {
-background: #a1a1a1;
-}
+    .section.visitor-section h2 {
+      color: #e67e22;
+    }
 
-.section {
-flex: 1 1 45%;
-background-color: #ffffff;
-padding: 20px;
-border-radius: 12px;
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-border-left: 6px solid #3498db;
-min-width: 300px;
-display: flex;
-flex-direction: column;
-}
+    .section h2::after {
+      content: "";
+      display: block;
+      width: 40px;
+      height: 3px;
+      background: #3498db;
+      margin: 8px 0;
+      border-radius: 3px;
+    }
 
-.visitor-section {
-border-left-color: #e67e22;
-}
+    .section.visitor-section h2::after {
+      background: #e67e22;
+    }
 
-.section h2 {
-color: #3498db;
-margin-bottom: 15px;
-font-size: 1.4rem;
-position: relative;
-padding-bottom: 10px;
-}
+    .records-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
 
-.section.visitor-section h2 {
-color: #e67e22;
-}
+    .record {
+      background: #f9f9f9;
+      padding: 15px;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: 1px solid #dcdcdc;
+      transition: all 0.3s ease;
+    }
 
-.section h2::after {
-content: "";
-display: block;
-width: 40px;
-height: 3px;
-background: #3498db;
-margin: 8px 0;
-border-radius: 3px;
-}
+    .record:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-.section.visitor-section h2::after {
-background: #e67e22;
-}
+    .record p {
+      margin: 0.4rem 0;
+      font-size: 0.95rem;
+      display: flex;
+    }
 
-.records-container {
-flex: 1;
-overflow-y: auto;
-padding-right: 5px;
-}
+    .label {
+      font-weight: bold;
+      color: #2c3e50;
+      min-width: 100px;
+      text-align: left;
+    }
 
-.records-container::-webkit-scrollbar {
-width: 6px;
-}
+    .value {
+      color: #333;
+      text-align: left;
+      flex: 1;
+    }
 
-.records-container::-webkit-scrollbar-track {
-background: #f1f1f1;
-border-radius: 10px;
-}
+    button {
+      margin-top: 20px;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+      width: 100%;
+    }
 
-.records-container::-webkit-scrollbar-thumb {
-background: #c1c1c1;
-border-radius: 10px;
-}
+    button:hover {
+      background: linear-gradient(135deg, #2980b9, #2573a7);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    }
 
-.records-container::-webkit-scrollbar-thumb:hover {
-background: #a1a1a1;
-}
+    button:active {
+      transform: translateY(0);
+    }
 
-.record {
-background: #f9f9f9;
-padding: 15px;
-margin: 12px 0;
-border-radius: 8px;
-border: 1px solid #dcdcdc;
-transition: all 0.3s ease;
-}
+    .loading, .no-records {
+      text-align: center;
+      padding: 20px;
+      color: #7f8c8d;
+    }
 
-.record:hover {
-transform: translateY(-2px);
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 20px;
+        width: 98%;
+        height: 98vh;
+      }
 
-.record p {
-margin: 0.4rem 0;
-font-size: 0.95rem;
-}
+      h1 {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+      }
 
-.label {
-font-weight: bold;
-color: #2c3e50;
-display: inline-block;
-width: 90px;
-}
+      .container {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
 
-button {
-margin-top: 20px;
-padding: 14px 20px;
-background: linear-gradient(135deg, #3498db, #2980b9);
-color: white;
-border: none;
-border-radius: 8px;
-font-size: 1.05rem;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.3s ease;
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 10px;
-box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-width: 100%;
-}
+      .section {
+        min-width: unset;
+        padding: 10px;
+      }
 
-button:hover {
-background: linear-gradient(135deg, #2980b9, #2573a7);
-transform: translateY(-2px);
-box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-}
+      .section h2 {
+        font-size: 1.2rem;
+      }
 
-button:active {
-transform: translateY(0);
-}
+      button {
+        padding: 12px;
+        font-size: 1rem;
+      }
+    }
 
-.loading, .no-records {
-text-align: center;
-padding: 20px;
-color: #7f8c8d;
-font-style: italic;
-}
+    @media (max-width: 480px) {
+      .main-container {
+        padding: 15px;
+      }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-.main-container {
-padding: 20px;
-width: 98%;
-height: 98vh;
-}
+      h1 {
+        font-size: 1.3rem;
+      }
 
-h1 {
-font-size: 1.5rem;
-margin-bottom: 15px;
-}
+      .section {
+        padding: 10px;
+      }
 
-.container {
-flex-direction: column;
-gap: 1.5rem;
-}
+      .section h2 {
+        font-size: 1.1rem;
+      }
 
-.section {
-min-width: unset;
-}
+      .record {
+        padding: 12px;
+      }
 
-.section h2 {
-font-size: 1.3rem;
-}
+      .record p {
+        font-size: 0.9rem;
+      }
 
-button {
-padding: 12px;
-font-size: 1rem;
-}
-}
+      .label {
+        min-width: 80px;
+      }
+    }
 
-@media (max-width: 480px) {
-.main-container {
-padding: 15px;
-}
+    /* Animation for records */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-h1 {
-font-size: 1.3rem;
-}
+    .section {
+      animation: fadeIn 0.5s ease-out;
+    }
 
-.section {
-padding: 15px;
-}
+    .record {
+      animation: fadeIn 0.4s ease-out;
+      animation-fill-mode: both;
+    }
 
-.section h2 {
-font-size: 1.2rem;
-}
-
-.record {
-padding: 12px;
-}
-
-.record p {
-font-size: 0.9rem;
-}
-
-.label {
-width: 70px;
-}
-}
-
-/* Animation for records */
-@keyframes fadeIn {
-from { opacity: 0; transform: translateY(15px); }
-to { opacity: 1; transform: translateY(0); }
-}
-
-.section {
-animation: fadeIn 0.5s ease-out;
-}
-
-.record {
-animation: fadeIn 0.4s ease-out;
-animation-fill-mode: both;
-}
-
-.record:nth-child(1) { animation-delay: 0.1s; }
-.record:nth-child(2) { animation-delay: 0.2s; }
-.record:nth-child(3) { animation-delay: 0.3s; }
-.record:nth-child(4) { animation-delay: 0.4s; }
-.record:nth-child(5) { animation-delay: 0.5s; }
-</style>
+    .record:nth-child(1) { animation-delay: 0.1s; }
+    .record:nth-child(2) { animation-delay: 0.2s; }
+    .record:nth-child(3) { animation-delay: 0.3s; }
+    .record:nth-child(4) { animation-delay: 0.4s; }
+    .record:nth-child(5) { animation-delay: 0.5s; }
+  </style>
 </head>
 <body>
 <div class="main-container">
-<h1>Church Attendance Records</h1>
-<div id="totalCount" style="text-align:center; margin-bottom: 20px; font-size: 1.1rem; color: #2c3e50;"></div>
+  <h1>Church Attendance Records</h1>
+  <div id="totalCount" style="text-align:center; margin-bottom: 20px; font-size: 1.1rem; color: #2c3e50;"></div>
 
-<header>
-<a href="/" class="back-home">←</a>
-</header>
-<div class="container">
-<!-- Members Section -->
-<div class="section">
-<h2>Members <span id="memberCount" style="font-size:0.9rem; color: #666;"></span></h2>
-<input type="text" id="memberSearch" placeholder="Search members by name..." style="margin-bottom:10px;padding:8px;border-radius:6px;border:1px solid #ccc" />
-<div class="records-container">
-<div id="membersContainer" class="loading">Loading...</div>
-</div>
-</div>
+  <header>
+    <a href="/" class="back-home">←</a>
+  </header>
+  <div class="container">
+    <!-- Members Section -->
+    <div class="section">
+      <h2>Members <span id="memberCount" style="font-size:0.9rem; color: #666;"></span></h2>
+      <input type="text" id="memberSearch" placeholder="Search members by name..." style="margin-bottom:10px;padding:8px;border-radius:6px;border:1px solid #ccc" />
+      <div class="records-container">
+        <div id="membersContainer" class="loading">Loading...</div>
+      </div>
+    </div>
 
-<!-- Visitors Section -->
-<div class="section visitor-section">
-<h2>Visitors <span id="visitorCount" style="font-size:0.9rem; color: #666;"></span></h2>
-<input type="text" id="visitorSearch" placeholder="Search visitors by name..." style="margin-bottom:10px;padding:8px;border-radius:6px;border:1px solid #ccc" />
-<div class="records-container">
-<div id="visitorsContainer" class="loading">Loading...</div>
-</div>
-</div>
-
-</div>
+    <!-- Visitors Section -->
+    <div class="section visitor-section">
+      <h2>Visitors <span id="visitorCount" style="font-size:0.9rem; color: #666;"></span></h2>
+      <input type="text" id="visitorSearch" placeholder="Search visitors by name..." style="margin-bottom:10px;padding:8px;border-radius:6px;border:1px solid #ccc" />
+      <div class="records-container">
+        <div id="visitorsContainer" class="loading">Loading...</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -340,6 +309,7 @@ const visitorSearch = document.getElementById("visitorSearch");
 let globalData = [];
 
 function displayRecords(data) {
+<<<<<<< HEAD
 globalData = data;
 renderFilteredRecords();
 }
@@ -376,6 +346,44 @@ div.innerHTML = `
 <p><span class="label">Comment:</span> ${record.comment}</p>
 `;
 return div;
+=======
+  globalData = data;
+  renderFilteredRecords();
+}
+
+function renderFilteredRecords() {
+  const memberQuery = memberSearch.value.toLowerCase();
+  const visitorQuery = visitorSearch.value.toLowerCase();
+
+  membersContainer.innerHTML = "";
+  visitorsContainer.innerHTML = "";
+
+  const members = globalData.filter(r => r.type === "member" && (!memberQuery || (r.name || "").toLowerCase().includes(memberQuery)));
+  const visitors = globalData.filter(r => r.type === "visitor" && (!visitorQuery || (r.name || "").toLowerCase().includes(visitorQuery)));
+
+  if (members.length === 0) membersContainer.innerHTML = "<div class='no-records'>No member records found.</div>";
+  if (visitors.length === 0) visitorsContainer.innerHTML = "<div class='no-records'>No visitor records found.</div>";
+
+  members.reverse().forEach(record => membersContainer.appendChild(createRecordDiv(record)));
+  visitors.reverse().forEach(record => visitorsContainer.appendChild(createRecordDiv(record)));
+  
+  document.getElementById("memberCount").textContent = `(${members.length})`;
+  document.getElementById("visitorCount").textContent = `(${visitors.length})`;
+  document.getElementById("totalCount").textContent = `Total Attendance: ${members.length + visitors.length}`;
+}
+
+function createRecordDiv(record) {
+  const div = document.createElement("div");
+  div.className = "record";
+  div.innerHTML = `
+    <p><span class="label">Name:</span> <span class="value">${record.name || 'N/A'}</span></p>
+    <p><span class="label">Gender:</span> <span class="value">${record.gender}</span></p>
+    <p><span class="label">Age Group:</span> <span class="value">${record.ageGroup}</span></p>
+    <p><span class="label">Date:</span> <span class="value">${record.date}</span></p>
+    <p><span class="label">Comment:</span> <span class="value">${record.comment}</span></p>
+  `;
+  return div;
+>>>>>>> b12a3f3889428b882b250f7b662fea234565a36c
 }
 
 // Listen for input changes
@@ -384,6 +392,7 @@ visitorSearch.oninput = renderFilteredRecords;
 
 // Fetch data (replace sampleData with fetch for real app)
 fetch("/saveAttendance")
+<<<<<<< HEAD
 .then(res => res.json())
 .then(data => displayRecords(data))
 .catch(err => {
@@ -393,3 +402,14 @@ visitorsContainer.innerHTML = "<div class='no-records' style='color:red'>Error l
 </script>
 </body>
 </html>
+=======
+  .then(res => res.json())
+  .then(data => displayRecords(data))
+  .catch(err => {
+    membersContainer.innerHTML = "<div class='no-records' style='color:red'>Error loading data.</div>";
+    visitorsContainer.innerHTML = "<div class='no-records' style='color:red'>Error loading data.</div>";
+  });
+</script>
+</body>
+</html>
+>>>>>>> b12a3f3889428b882b250f7b662fea234565a36c
