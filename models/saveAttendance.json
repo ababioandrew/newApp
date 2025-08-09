@@ -36,5 +36,13 @@
     "ageGroup": "youth",
     "date": "2025-08-07",
     "comment": "Noted"
+  },
+  {
+    "type": "member",
+    "name": "Lolo",
+    "gender": "male",
+    "ageGroup": "youth",
+    "date": "2025-08-08",
+    "comment": "Noted"
   }
 ]
